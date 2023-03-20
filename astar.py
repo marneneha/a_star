@@ -153,7 +153,7 @@ def coord_input(canvas, manual_input):
         # return start_position, goal_position
     else:
         start_position = [50, 110, 30]
-        goal_position = [400, 100, 30]
+        goal_position = [220, 220, 30]
         step_size = 5
     # start_position = tuple(start_position)
     # goal_position = tuple(goal_position)
@@ -212,15 +212,15 @@ def goal_node_check(node, final):
 
 def zero_deg_action(node, parent_node_g_cost, canvas, step_size): 
     # Moves the robot at 0 degree angle (wrt robot's frame) by the step size
-    print(bcolors.OKGREEN+"m inside 0"+bcolors.ENDC)
-    print(bcolors.FAIL+"node is"+str(node)+bcolors.ENDC)
+    # print(bcolors.OKGREEN+"m inside 0"+bcolors.ENDC)
+    # print(bcolors.FAIL+"node is"+str(node)+bcolors.ENDC)
     x, y, theta = node  
     # Calculate new angle
     new_angle = (theta + 0) % 360   
     # Calculate new x and y coordinates after the new angle 
     next_x = x + step_size * np.cos(np.deg2rad(new_angle))
     next_y = y + step_size * np.sin(np.deg2rad(new_angle))
-    print(parent_node_g_cost)
+    # print(parent_node_g_cost)
     g_cost = parent_node_g_cost+1
     # Check if new coordinates are within the canvas boundaries and not colliding with any obstacles
     if not (0 <= next_x < canvas.shape[1] and 0 <= next_y < canvas.shape[0] and not obstacle_checkpoint(next_x, next_y, canvas)):
@@ -233,7 +233,7 @@ def zero_deg_action(node, parent_node_g_cost, canvas, step_size):
     # Update visited matrix and return new node
    # visited_node[idx] = 1
     next_node = (next_x, next_y, new_angle)
-    print(next_node, g_cost)
+    # print(next_node, g_cost)
 
 
     # bool, which is true if child node can be generated
@@ -243,8 +243,8 @@ def zero_deg_action(node, parent_node_g_cost, canvas, step_size):
     
 def plus_thirty_deg_action(node, parent_node_g_cost, canvas, step_size):    # Local angles
     # Moves the robot at +30 degree angle (wrt robot's frame) by the step size
-    print(bcolors.OKGREEN+"m inside+30"+bcolors.ENDC)
-    print(bcolors.FAIL+"node is"+str(node)+bcolors.ENDC)
+    # print(bcolors.OKGREEN+"m inside+30"+bcolors.ENDC)
+    # print(bcolors.FAIL+"node is"+str(node)+bcolors.ENDC)
     x, y, theta = node  
     # Calculate new angle
     new_angle = (theta - 30) % 360   
@@ -264,7 +264,7 @@ def plus_thirty_deg_action(node, parent_node_g_cost, canvas, step_size):    # Lo
     # Update visited matrix and return new node
    # visited_node[idx] = 1
     next_node = (next_x, next_y, new_angle)
-    print(next_node, g_cost)
+    # print(next_node, g_cost)
 
 
     # bool, which is true if child node can be generated
@@ -274,8 +274,8 @@ def plus_thirty_deg_action(node, parent_node_g_cost, canvas, step_size):    # Lo
 
 def minus_thirty_deg_action(node, parent_node_g_cost, canvas, step_size): 
     # Moves the robot at -30 degree angle (wrt robot's frame) by the step size
-    print(bcolors.OKGREEN+"m inside-30"+bcolors.ENDC)
-    print(bcolors.FAIL+"node is"+str(node)+bcolors.ENDC)
+    # print(bcolors.OKGREEN+"m inside-30"+bcolors.ENDC)
+    # print(bcolors.FAIL+"node is"+str(node)+bcolors.ENDC)
     x, y, theta = node  
     # Calculate new angle
     new_angle = (theta + 30) % 360   
@@ -295,7 +295,7 @@ def minus_thirty_deg_action(node, parent_node_g_cost, canvas, step_size):
     # Update visited matrix and return new node
    # visited_node[idx] = 1
     next_node = (next_x, next_y, new_angle)
-    print(next_node, g_cost)
+    # print(next_node, g_cost)
 
 
     # bool, which is true if child node can be generated
@@ -305,8 +305,8 @@ def minus_thirty_deg_action(node, parent_node_g_cost, canvas, step_size):
 
 def minus_sixty_deg_action(node, parent_node_g_cost, canvas, step_size):    # Local angles
     # Moves the robot at -60 degree angle (wrt robot's frame) by the step size
-    print(bcolors.OKGREEN+"m inside -60"+bcolors.ENDC)
-    print(bcolors.FAIL+"node is"+str(node)+bcolors.ENDC)
+    # print(bcolors.OKGREEN+"m inside -60"+bcolors.ENDC)
+    # print(bcolors.FAIL+"node is"+str(node)+bcolors.ENDC)
     x, y, theta = node  
     # Calculate new angle
     new_angle = (theta + 60) % 360   
@@ -326,7 +326,7 @@ def minus_sixty_deg_action(node, parent_node_g_cost, canvas, step_size):    # Lo
     # Update visited matrix and return new node
    # visited_node[idx] = 1
     next_node = (next_x, next_y, new_angle)
-    print(next_node, g_cost)
+    # print(next_node, g_cost)
 
 
     # bool, which is true if child node can be generated
@@ -334,11 +334,10 @@ def minus_sixty_deg_action(node, parent_node_g_cost, canvas, step_size):    # Lo
     # bool if the generates node is visible
     return True, next_node, g_cost, False
 
-
 def plus_sixty_deg_action(node, parent_node_g_cost, canvas, step_size):    # Local angles
     # Moves the robot at -60 degree angle (wrt robot's frame) by the step size
-    print(bcolors.OKGREEN+"m inside plus 60"+bcolors.ENDC)
-    print(bcolors.FAIL+"node is"+str(node)+bcolors.ENDC)
+    # print(bcolors.OKGREEN+"m inside plus 60"+bcolors.ENDC)
+    # print(bcolors.FAIL+"node is"+str(node)+bcolors.ENDC)
     x, y, theta = node  
     # Calculate new angle
     new_angle = (theta - 60) % 360   
@@ -359,12 +358,13 @@ def plus_sixty_deg_action(node, parent_node_g_cost, canvas, step_size):    # Loc
     # Update visited matrix and return new node
    # visited_node[idx] = 1
     next_node = (next_x, next_y, new_angle)
-    print(next_node, g_cost)
+    # print(next_node, g_cost)
 
     # bool, which is true if child node can be generated
     # list of next node is child nodes generated after the action
     # bool if the generates node is visible
     return True, next_node, g_cost, False
+
 
 # heurastic function considers the euclidean distance
 def h_cost_calc(node, goal_node):
@@ -391,17 +391,19 @@ def astar(start_position, final_position, canvas, step_size):
     while(len(open_list)):
         # pop new node
         new_closed_list_element = hq.heappop(open_list)
-        print(new_closed_list_element)
-        closed_list = dict({tuple(new_closed_list_element[3]):tuple(new_closed_list_element[4])})
+        # print(new_closed_list_element)
+        closed_list[tuple(new_closed_list_element[3])]=tuple(new_closed_list_element[4])
         print(closed_list)
         parent_node = new_closed_list_element[3]
         parent_node_g_cost = new_closed_list_element[2]
         # add node in the closed list
-        # if(dist(node, final_position))<2:
-        #     backtrack(closed_list)
-        #     break
+        if(h_cost_calc(parent_node, final_position))<5:
+            final_parent_node = parent_node
+            back_track(start_position, final_parent_node, closed_list, canvas)
+            print(bcolors.FAIL+"goal node reached"+bcolors.ENDC)
+            break
         # add visited node
-        print(bcolors.WARNING + "inside while"+ bcolors.ENDC)
+        # print(bcolors.WARNING + "inside while"+ bcolors.ENDC)
         for obstacle_check, node, g_cost, visibility_check in [
         zero_deg_action(parent_node, parent_node_g_cost, canvas, step_size),
         plus_thirty_deg_action(parent_node, parent_node_g_cost, canvas, step_size),
@@ -410,34 +412,52 @@ def astar(start_position, final_position, canvas, step_size):
         plus_sixty_deg_action(parent_node, parent_node_g_cost, canvas, step_size),]:
             # check if node is in obstacle spaxe
             # check if it is in canvas
-            print(bcolors.OKCYAN+"inside for"+ bcolors.ENDC)
+            # print(bcolors.OKCYAN+"inside for"+ bcolors.ENDC)
             if obstacle_check:
                 # check if it is in closed list
                 if(not closed_list.__contains__(node)):
                 # if it is in OL then update the value
                 # if it is not in OL update the OL
-
                     h_cost = (h_cost_calc(node, final_position))
                     # g_cost = 
                     f_cost = h_cost+g_cost
                     # node = [0,0]
                     # parent_node = [0,0]
-                    print(bcolors.OKBLUE+"inside if"+ bcolors.ENDC)
-                    print("node is"+str(node))
-                    print("f_cost is"+str(f_cost))
-                    print("h_cost is"+str(h_cost))
-                    print("g_cost is"+str(g_cost))
-                    print("parent node is"+str(parent_node))
+                    # print(bcolors.OKBLUE+"inside if"+ bcolors.ENDC)
+                    # print("node is"+str(node))
+                    # print("f_cost is"+str(f_cost))
+                    # print("h_cost is"+str(h_cost))
+                    # print("g_cost is"+str(g_cost))
+                    # print("parent node is"+str(parent_node))
                     new_open_list_element = [f_cost, h_cost, g_cost, node, parent_node]
-                    print(bcolors.BOLD+"before node addition openlist was"+str(open_list)+bcolors.ENDC)
+                    # print(bcolors.BOLD+"before node addition openlist was"+str(open_list)+bcolors.ENDC)
                     hq.heappush(open_list, new_open_list_element)
                     hq.heapify(open_list)
-                    print(bcolors.BOLD+"after node addition openlist was"+str(open_list)+bcolors.ENDC)
+                    # print(bcolors.BOLD+"after node addition openlist was"+str(open_list)+bcolors.ENDC)
                     cv2.circle(canvas,(int(node[0]),int(node[1])),2,(0,0,255),-1)
                     cv2.imshow('canvas', canvas)
                     cv2.waitKey(0)
 
-# def back_track(start_position, final_position, all_list, canvas):
+def back_track(start_position, final_parent_node, closed_list, canvas):
+    print(bcolors.FAIL+"closted list is"+str(closed_list)+bcolors.ENDC)
+    output_video = cv2.VideoWriter('Anukriti_Singh_project2.avi', cv2.VideoWriter_fourcc(*'XVID'), 800, (canvas.shape[1], canvas.shape[0])) 
+    child_node = final_parent_node
+    parent_node = closed_list[child_node]
+    print(child_node)
+    print(parent_node)
+    # parent_node = final_parent_node
+    # child_node = closed_list[final_parent_node]
+    # cv2.circle(canvas,(int(parent_node[0]),int(parent_node[1])),2,(255,255,255),-1)
+    while(child_node != parent_node):
+        cv2.circle(canvas,(int(child_node[0]),int(child_node[1])),2,(255,255,255),-1)
+        cv2.imshow('canvas',canvas)
+        cv2.waitKey(0)
+        child_node = parent_node
+        parent_node = closed_list[child_node]
+    # for k in closed_list:
+    #     canvas[k[1], k[0]] = [255] * 3
+    #     cv2.imshow(canvas)
+
   # TO FILL
 
 if __name__ == '__main__':
