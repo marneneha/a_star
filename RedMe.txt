@@ -1,0 +1,30 @@
+How to runt the file:
+
+change dirctory to the place of download e.g. if you downloaded to "download folder" cd downloads/proj3_neha_anukriti
+run "pyhton3 a_star_neha_anukriti.py"
+libraries used
+cv2
+numpy
+math
+heapq
+
+How to give inputs:
+origin is assumed in the bottom left corner
+wall thickness of 10 pixels and boundry gap of 5 pixel is given for all obstacles
+terminal prints the command to enter the value
+enter value as per your wish and then hit enter button
+
+Team member
+Neha Marne: nmanrne: 119400210
+anukritisingh: 
+
+Git Repo
+We parted our work instead of working on the same repo and colaborating (idk why) for code thus there are 2 git repo of indivisual contributor
+1. https://github.com/marneneha/a_star
+2. https://github.com/AnukritiSinghh/project2_dijkstra_pointrobot/blob/main/dijkstra_anukriti_singh.py
+
+
+Regarding the video:
+The video displays the process of path generation, but the pace is too rapid. 
+Although you can observe the path generation by dragging the video slider, the duration is so brief that it does not effectively play. 
+As a result, there is a plea to adjust the slider to view the video.
