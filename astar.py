@@ -8,6 +8,17 @@ import heapq as hq
 import numpy as np
 import math
 
+class bcolors:
+    HEADER = '\033[95m'
+    OKBLUE = '\033[94m'
+    OKCYAN = '\033[96m'
+    OKGREEN = '\033[92m'
+    WARNING = '\033[93m'
+    FAIL = '\033[91m'
+    ENDC = '\033[0m'
+    BOLD = '\033[1m'
+    UNDERLINE = '\033[4m'
+
 # function to draw the obstacles on a canvas map 
 def obstacles_map(canvas):
     # rectangle 1 obstacle with the given dimensions, the thickness of 5mm is considered inwards
@@ -39,7 +50,7 @@ def obstacles_map(canvas):
 # TO DO: Add 'offset' that would be including the robot radius and clearance, you can use your previous function as well
 
 
-def coord_input(canvas, manual_input=False):
+def coord_input(canvas, manual_input):
     if(manual_input):
     # initialize empty lists
         start_position = []
@@ -142,13 +153,13 @@ def coord_input(canvas, manual_input=False):
         # return start_position, goal_position
     else:
         start_position = [50, 110, 30]
-        goal_position = [220, 220, 30]
+        goal_position = [400, 100, 30]
         step_size = 5
     # start_position = tuple(start_position)
     # goal_position = tuple(goal_position)
     return start_position, goal_position, int(step_size)
 
-def get_robot_radius_clearance(manual_input=False):
+def get_robot_radius_clearance(manual_input):
     if(manual_input):
         while True:
             try:
@@ -199,19 +210,21 @@ def goal_node_check(node, final):
     return np.linalg.norm(np.array(node[:2]) - np.array(final[:2])) < 1.5 and node[2] == final[2]
 
 
-def zero_deg_action(node, canvas, step_size): 
+def zero_deg_action(node, parent_node_g_cost, canvas, step_size): 
     # Moves the robot at 0 degree angle (wrt robot's frame) by the step size
+    print(bcolors.OKGREEN+"m inside 0"+bcolors.ENDC)
+    print(bcolors.FAIL+"node is"+str(node)+bcolors.ENDC)
     x, y, theta = node  
     # Calculate new angle
     new_angle = (theta + 0) % 360   
     # Calculate new x and y coordinates after the new angle 
     next_x = x + step_size * np.cos(np.deg2rad(new_angle))
     next_y = y + step_size * np.sin(np.deg2rad(new_angle))
-    prev_g_cost = node[2]
-    g_cost = prev_g_cost+1
+    print(parent_node_g_cost)
+    g_cost = parent_node_g_cost+1
     # Check if new coordinates are within the canvas boundaries and not colliding with any obstacles
     if not (0 <= next_x < canvas.shape[1] and 0 <= next_y < canvas.shape[0] and not obstacle_checkpoint(next_x, next_y, canvas)):
-        return False, node, prev_g_cost, False
+        return False, node, parent_node_g_cost, False
     
     # Check if new node is a seen before or is duplicate
   #  idx = (int(next_y*2), int(next_x*2), int(new_angle/30))
@@ -220,27 +233,29 @@ def zero_deg_action(node, canvas, step_size):
     # Update visited matrix and return new node
    # visited_node[idx] = 1
     next_node = (next_x, next_y, new_angle)
-    print(next_node)
+    print(next_node, g_cost)
+
 
     # bool, which is true if child node can be generated
     # list of next node is child nodes generated after the action
     # bool if the generates node is visible
     return True, next_node, g_cost, False
     
-
-def plus_thirty_deg_action(node, canvas, step_size):    # Local angles
+def plus_thirty_deg_action(node, parent_node_g_cost, canvas, step_size):    # Local angles
     # Moves the robot at +30 degree angle (wrt robot's frame) by the step size
+    print(bcolors.OKGREEN+"m inside+30"+bcolors.ENDC)
+    print(bcolors.FAIL+"node is"+str(node)+bcolors.ENDC)
     x, y, theta = node  
     # Calculate new angle
     new_angle = (theta - 30) % 360   
     # Calculate new x and y coordinates after the new angle 
     next_x = x + step_size * np.cos(np.deg2rad(new_angle))
     next_y = y + step_size * np.sin(np.deg2rad(new_angle))
-    prev_g_cost = node[2]
-    g_cost = prev_g_cost+1.15
+
+    g_cost = parent_node_g_cost+1.15
     # Check if new coordinates are within the canvas boundaries and not colliding with any obstacles
     if not (0 <= next_x < canvas.shape[1] and 0 <= next_y < canvas.shape[0] and not obstacle_checkpoint(next_x, next_y, canvas)):
-        return False, node, prev_g_cost, False
+        return False, node, parent_node_g_cost, False
     
     # Check if new node is a seen before or is duplicate
   #  idx = (int(next_y*2), int(next_x*2), int(new_angle/30))
@@ -249,27 +264,29 @@ def plus_thirty_deg_action(node, canvas, step_size):    # Local angles
     # Update visited matrix and return new node
    # visited_node[idx] = 1
     next_node = (next_x, next_y, new_angle)
-    print(next_node)
+    print(next_node, g_cost)
+
 
     # bool, which is true if child node can be generated
     # list of next node is child nodes generated after the action
     # bool if the generates node is visible
     return True, next_node, g_cost, False
 
-
-def minus_thirty_deg_action(node, canvas, step_size): 
+def minus_thirty_deg_action(node, parent_node_g_cost, canvas, step_size): 
     # Moves the robot at -30 degree angle (wrt robot's frame) by the step size
+    print(bcolors.OKGREEN+"m inside-30"+bcolors.ENDC)
+    print(bcolors.FAIL+"node is"+str(node)+bcolors.ENDC)
     x, y, theta = node  
     # Calculate new angle
     new_angle = (theta + 30) % 360   
     # Calculate new x and y coordinates after the new angle 
     next_x = x + step_size * np.cos(np.deg2rad(new_angle))
     next_y = y + step_size * np.sin(np.deg2rad(new_angle))
-    prev_g_cost = node[2]
-    g_cost = prev_g_cost+1.15
+
+    g_cost = parent_node_g_cost+1.15
     # Check if new coordinates are within the canvas boundaries and not colliding with any obstacles
     if not (0 <= next_x < canvas.shape[1] and 0 <= next_y < canvas.shape[0] and not obstacle_checkpoint(next_x, next_y, canvas)):
-        return False, node, prev_g_cost, False
+        return False, node, parent_node_g_cost, False
     
     # Check if new node is a seen before or is duplicate
   #  idx = (int(next_y*2), int(next_x*2), int(new_angle/30))
@@ -278,7 +295,39 @@ def minus_thirty_deg_action(node, canvas, step_size):
     # Update visited matrix and return new node
    # visited_node[idx] = 1
     next_node = (next_x, next_y, new_angle)
-    print(next_node)
+    print(next_node, g_cost)
+
+
+    # bool, which is true if child node can be generated
+    # list of next node is child nodes generated after the action
+    # bool if the generates node is visible
+    return True, next_node, g_cost, False
+
+def minus_sixty_deg_action(node, parent_node_g_cost, canvas, step_size):    # Local angles
+    # Moves the robot at -60 degree angle (wrt robot's frame) by the step size
+    print(bcolors.OKGREEN+"m inside -60"+bcolors.ENDC)
+    print(bcolors.FAIL+"node is"+str(node)+bcolors.ENDC)
+    x, y, theta = node  
+    # Calculate new angle
+    new_angle = (theta + 60) % 360   
+    # Calculate new x and y coordinates after the new angle 
+    next_x = x + step_size * np.cos(np.deg2rad(new_angle))
+    next_y = y + step_size * np.sin(np.deg2rad(new_angle))
+
+    g_cost = parent_node_g_cost+2
+    # Check if new coordinates are within the canvas boundaries and not colliding with any obstacles
+    if not (0 <= next_x < canvas.shape[1] and 0 <= next_y < canvas.shape[0] and not obstacle_checkpoint(next_x, next_y, canvas)):
+        return False, node, parent_node_g_cost, False
+    
+    # Check if new node is a seen before or is duplicate
+  #  idx = (int(next_y*2), int(next_x*2), int(new_angle/30))
+   # if visited_node[idx] == 1:
+      #  return True, node, True    
+    # Update visited matrix and return new node
+   # visited_node[idx] = 1
+    next_node = (next_x, next_y, new_angle)
+    print(next_node, g_cost)
+
 
     # bool, which is true if child node can be generated
     # list of next node is child nodes generated after the action
@@ -286,19 +335,22 @@ def minus_thirty_deg_action(node, canvas, step_size):
     return True, next_node, g_cost, False
 
 
-def plus_sixty_deg_action(node, canvas, step_size):    # Local angles
+def plus_sixty_deg_action(node, parent_node_g_cost, canvas, step_size):    # Local angles
     # Moves the robot at -60 degree angle (wrt robot's frame) by the step size
+    print(bcolors.OKGREEN+"m inside plus 60"+bcolors.ENDC)
+    print(bcolors.FAIL+"node is"+str(node)+bcolors.ENDC)
     x, y, theta = node  
     # Calculate new angle
-    new_angle = (theta + 60) % 360   
+    new_angle = (theta - 60) % 360   
     # Calculate new x and y coordinates after the new angle 
     next_x = x + step_size * np.cos(np.deg2rad(new_angle))
     next_y = y + step_size * np.sin(np.deg2rad(new_angle))
-    prev_g_cost = node[2]
-    g_cost = prev_g_cost+1.15
+
+    g_cost = parent_node_g_cost+2
+
     # Check if new coordinates are within the canvas boundaries and not colliding with any obstacles
     if not (0 <= next_x < canvas.shape[1] and 0 <= next_y < canvas.shape[0] and not obstacle_checkpoint(next_x, next_y, canvas)):
-        return False, node, prev_g_cost, False
+        return False, node, parent_node_g_cost, False
     
     # Check if new node is a seen before or is duplicate
   #  idx = (int(next_y*2), int(next_x*2), int(new_angle/30))
@@ -307,67 +359,8 @@ def plus_sixty_deg_action(node, canvas, step_size):    # Local angles
     # Update visited matrix and return new node
    # visited_node[idx] = 1
     next_node = (next_x, next_y, new_angle)
-    print(next_node)
+    print(next_node, g_cost)
 
-    # bool, which is true if child node can be generated
-    # list of next node is child nodes generated after the action
-    # bool if the generates node is visible
-    return True, next_node, g_cost, False
-
-
-def minus_sixty_deg_action(node, canvas, step_size):    # Local angles
-    # Moves the robot at -60 degree angle (wrt robot's frame) by the step size
-    x, y, theta = node  
-    # Calculate new angle
-    new_angle = (theta + 60) % 360   
-    # Calculate new x and y coordinates after the new angle 
-    next_x = x + step_size * np.cos(np.deg2rad(new_angle))
-    next_y = y + step_size * np.sin(np.deg2rad(new_angle))
-    prev_g_cost = node[2]
-    g_cost = prev_g_cost+2
-    # Check if new coordinates are within the canvas boundaries and not colliding with any obstacles
-    if not (0 <= next_x < canvas.shape[1] and 0 <= next_y < canvas.shape[0] and not obstacle_checkpoint(next_x, next_y, canvas)):
-        return False, node, prev_g_cost, False
-    
-    # Check if new node is a seen before or is duplicate
-  #  idx = (int(next_y*2), int(next_x*2), int(new_angle/30))
-   # if visited_node[idx] == 1:
-      #  return True, node, True    
-    # Update visited matrix and return new node
-   # visited_node[idx] = 1
-    next_node = (next_x, next_y, new_angle)
-    print(next_node)
-
-    # bool, which is true if child node can be generated
-    # list of next node is child nodes generated after the action
-    # bool if the generates node is visible
-    return True, next_node, g_cost, False
-
-
-def plus_sixty_deg_action(node, canvas, step_size):    # Local angles
-    # Moves the robot at -60 degree angle (wrt robot's frame) by the step size
-    x, y, theta = node  
-    # Calculate new angle
-    new_angle = (theta + 60) % 360   
-    # Calculate new x and y coordinates after the new angle 
-    next_x = x + step_size * np.cos(np.deg2rad(new_angle))
-    next_y = y + step_size * np.sin(np.deg2rad(new_angle))
-    prev_g_cost = node[2]
-    g_cost = prev_g_cost+2
-    print("m inside")
-
-    # Check if new coordinates are within the canvas boundaries and not colliding with any obstacles
-    if not (0 <= next_x < canvas.shape[1] and 0 <= next_y < canvas.shape[0] and not obstacle_checkpoint(next_x, next_y, canvas)):
-        return False, node, prev_g_cost, False
-    
-    # Check if new node is a seen before or is duplicate
-  #  idx = (int(next_y*2), int(next_x*2), int(new_angle/30))
-   # if visited_node[idx] == 1:
-      #  return True, node, True    
-    # Update visited matrix and return new node
-   # visited_node[idx] = 1
-    next_node = (next_x, next_y, new_angle)
-    print(next_node)
     # bool, which is true if child node can be generated
     # list of next node is child nodes generated after the action
     # bool if the generates node is visible
@@ -397,40 +390,49 @@ def astar(start_position, final_position, canvas, step_size):
     hq.heappush(open_list, [f_cost, h_cost, g_cost, tuple(start_position), tuple(start_position)])
     while(len(open_list)):
         # pop new node
-        new_closed_list_element = open_list.pop()
+        new_closed_list_element = hq.heappop(open_list)
         print(new_closed_list_element)
         closed_list = dict({tuple(new_closed_list_element[3]):tuple(new_closed_list_element[4])})
         print(closed_list)
         parent_node = new_closed_list_element[3]
+        parent_node_g_cost = new_closed_list_element[2]
         # add node in the closed list
         # if(dist(node, final_position))<2:
         #     backtrack(closed_list)
         #     break
         # add visited node
-        print("m here")
+        print(bcolors.WARNING + "inside while"+ bcolors.ENDC)
         for obstacle_check, node, g_cost, visibility_check in [
-        zero_deg_action(parent_node, canvas, step_size),
-        plus_thirty_deg_action(parent_node, canvas, step_size),
-        minus_thirty_deg_action(parent_node, canvas, step_size),
-        minus_sixty_deg_action(parent_node, canvas, step_size),
-        plus_sixty_deg_action(parent_node, canvas, step_size),]:
+        zero_deg_action(parent_node, parent_node_g_cost, canvas, step_size),
+        plus_thirty_deg_action(parent_node, parent_node_g_cost, canvas, step_size),
+        minus_thirty_deg_action(parent_node, parent_node_g_cost, canvas, step_size),
+        minus_sixty_deg_action(parent_node, parent_node_g_cost, canvas, step_size),
+        plus_sixty_deg_action(parent_node, parent_node_g_cost, canvas, step_size),]:
             # check if node is in obstacle spaxe
             # check if it is in canvas
-            print("m here1")
+            print(bcolors.OKCYAN+"inside for"+ bcolors.ENDC)
             if obstacle_check:
                 # check if it is in closed list
                 if(not closed_list.__contains__(node)):
                 # if it is in OL then update the value
                 # if it is not in OL update the OL
-                    print("m here2")
+
                     h_cost = (h_cost_calc(node, final_position))
                     # g_cost = 
                     f_cost = h_cost+g_cost
                     # node = [0,0]
                     # parent_node = [0,0]
+                    print(bcolors.OKBLUE+"inside if"+ bcolors.ENDC)
+                    print("node is"+str(node))
+                    print("f_cost is"+str(f_cost))
+                    print("h_cost is"+str(h_cost))
+                    print("g_cost is"+str(g_cost))
+                    print("parent node is"+str(parent_node))
                     new_open_list_element = [f_cost, h_cost, g_cost, node, parent_node]
+                    print(bcolors.BOLD+"before node addition openlist was"+str(open_list)+bcolors.ENDC)
                     hq.heappush(open_list, new_open_list_element)
                     hq.heapify(open_list)
+                    print(bcolors.BOLD+"after node addition openlist was"+str(open_list)+bcolors.ENDC)
                     cv2.circle(canvas,(int(node[0]),int(node[1])),2,(0,0,255),-1)
                     cv2.imshow('canvas', canvas)
                     cv2.waitKey(0)
@@ -449,8 +451,8 @@ if __name__ == '__main__':
     start_position, final_position, step = coord_input(canvas, manual_input=False) 
     print(start_position)
     # Changing the input Cartesian Coordinates of the Map to Image Coordinates:
-    # start_position[1] = canvas.shape[0]-1 - start_position[1]
-    # final_position[1] = canvas.shape[0]-1 - final_position[1]
+    start_position[1] = canvas.shape[0]-1 - start_position[1]
+    final_position[1] = canvas.shape[0]-1 - final_position[1]
     # print(initial_state, final_state)
     # Converting to image coordinates
     # if start_position[2] != 0:
